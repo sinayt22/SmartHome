@@ -1,16 +1,12 @@
 namespace SmartHome;
-public delegate void SensorTrigger(string sensorName, decimal value);
 
 public class MotionSensor
 {
-    public SensorTrigger? Trigger;
+    public event EventHandler<SensorEventArgs>? Triggered;
 
-    public void Detect()
+    public void Detect(double reading)
     {
-        if (Trigger != null)
-            Trigger("Motion", 12.3m);
-        else
-            Console.WriteLine("No Triggers");
+        Triggered?.Invoke(this, new SensorEventArgs {SensorName = "Motion", Value = reading, TimeStamp = DateTime.Now});
     }
 }
 
