@@ -43,12 +43,14 @@
 // phase 2
 var motionSensor = new MotionSensor();
 var temperatureSensor = new TemperatureSensor(15);
-var alertService = new AlertService();
+var eventCounter = new EventCounter();
+var alertService = new AlertService(eventCounter.ProcessSensorEvent);
 
 motionSensor.Triggered += alertService.OnSensorDetected;
 temperatureSensor.Triggered += alertService.OnSensorDetected;
-alertService.LogAction = EventLogger.LogEvent;
 
 motionSensor.Detect(22.4);
 temperatureSensor.Detect(10);
 temperatureSensor.Detect(16);
+
+Console.WriteLine($"The # of events detected: {eventCounter.Count}");

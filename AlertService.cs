@@ -1,18 +1,16 @@
 namespace SmartHome;
 
-public static class EventLogger
+public class EventCounter
 {
-    public static void LogEvent(SensorEventArgs e)
+    public int Count { get; protected set; }
+    public void ProcessSensorEvent(SensorEventArgs e)
     {
-        Console.WriteLine("=== Event Logger - Logging event ===");
-        Console.WriteLine($"Sensor: '{e.SensorName}' detected value: '{e.Value}'");
-        Console.WriteLine($"Time of detection: {e.TimeStamp}");
+        Count += 1;
     }
 }
 
-public class AlertService
+public class AlertService(Action<SensorEventArgs>? postProcess)
 {
-    public Action<SensorEventArgs>? LogAction;
     public void OnSensorDetected(object? sender, SensorEventArgs e)
     {
         if (e.SensorName == "Motion")
@@ -23,7 +21,7 @@ public class AlertService
         {
             Console.WriteLine($"Detected a change in temperature above threshold. value: '{e.Value}' at time {e.TimeStamp}");
         }
-        LogAction?.Invoke(e);
+        postProcess?.Invoke(e);
     }
 }
 
